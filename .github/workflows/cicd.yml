@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ${{ github.workspace }}/app
-          file: Dockerfile
+          file: ./Dockerfile
           push: true
           platforms: linux/amd64
           tags: ${{ secrets.DOCKER_USERNAME }}/cicd-test:latest
