@@ -71,7 +71,7 @@ jobs:
           chmod 400 private_key.pem
           ssh -i private_key.pem ubuntu@${{ secrets.SERVER_IP }} "
             sudo systemctl start docker &&
-            docker pull ${{ secrets.DOCKER_USERNAME }}/cicd-test:latest &&
-            docker run -d -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/cicd-test:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cicd-test:latest &&
+            sudo docker run -d -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/cicd-test:latest
           "
           
