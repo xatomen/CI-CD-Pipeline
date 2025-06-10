@@ -62,11 +62,9 @@ jobs:
     steps:
 
       - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Deploy to server
         run: |
-          echo "Deploying to server..."
-          ssh -o StrictHostKeyChecking=no user@your-server "docker pull ${{ secrets.DOCKER_USERNAME }}/cicd-test:latest && docker run -d --rm --name cicd-test -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/cicd-test:latest"
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 400 private_key
+          ssh -i private_key.pem ubuntu@${{ secrets.SERVER_IP }}
+          docker pull ${{ secrets.DOCKER_USERNAME }}/cicd-test:latest
+          docker run -d -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/cicd-test:latest
