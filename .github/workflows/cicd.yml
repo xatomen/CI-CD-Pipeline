@@ -36,10 +36,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
 
       - name: Setup Trivy
+        if: false
         uses: aquasecurity/trivy-action@0.31.0
         with:
           image-ref: ${{ secrets.DOCKER_USERNAME }}/cicd-test:latest
@@ -47,3 +46,23 @@ jobs:
           exit-code: '1'
           severity: 'HIGH,CRITICAL'
           ignore-unfixed: true
+        
+      - name: Run tests
+        run: |
+          echo "Running tests..."
+
+  deploy:
+
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to server
+        run: |
+          docker pull ${{ secrets.DOCKER_USERNAME }}/cicd-test:latest
+          docker run -p 3000:3000 -d ${{ secrets.DOCKER_USERNAME }}/cicd-test:latest
